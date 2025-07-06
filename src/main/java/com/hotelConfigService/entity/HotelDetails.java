@@ -39,6 +39,7 @@ public class HotelDetails {
     public static class RoomType {
         private String name;
         private int price;
+        private int totalRooms;
     }
 
 
