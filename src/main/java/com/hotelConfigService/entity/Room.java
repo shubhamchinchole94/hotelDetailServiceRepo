@@ -14,4 +14,7 @@ public class Room {
 
     @Id
     private String id;
+    private String status;
+    private String roomNumber;
+    private String note;
 }

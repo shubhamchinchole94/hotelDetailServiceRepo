@@ -54,14 +54,14 @@ public class HotelConfigController {
 
 
     @GetMapping("/hotel")
-    public ResponseEntity<List<HotelDetails>> getAllConfigs() {
+    public ResponseEntity<HotelDetails> getAllConfigs() {
         log.info("Received request to get all hotel configurations");
 
         List<HotelDetails> configs = service.getAllConfigs();
 
         log.info("Total configurations found: {}", configs.size());
 
-        return ResponseEntity.ok(configs);
+        return ResponseEntity.ok(configs.get(0));
     }
 
     @GetMapping("/hotel/{id}")
