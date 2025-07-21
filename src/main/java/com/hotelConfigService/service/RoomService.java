@@ -1,9 +1,11 @@
 package com.hotelConfigService.service;
+import com.hotelConfigService.entity.HotelDetails;
 import com.hotelConfigService.entity.Room;
 import com.hotelConfigService.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,5 +63,49 @@ public class RoomService {
             roomRepository.save(newRoom);
         }
     }
+
+    public void saveDefaultRooms(HotelDetails hotelDetails) {
+        int totalFloors = hotelDetails.getTotalFloors();
+        int roomsPerFloor = hotelDetails.getRoomsPerFloor();
+        int totalRooms = totalFloors * roomsPerFloor;
+
+        List<Room> roomList = new ArrayList<>();
+        List<HotelDetails.RoomType> roomTypes = hotelDetails.getRoomTypes();
+
+        int floor = 1;
+        int roomInFloor = 1;
+        int generatedCount = 0;
+
+        for (HotelDetails.RoomType roomType : roomTypes) {
+            for (int i = 0; i < roomType.getTotalRooms(); i++) {
+                // Generate room number like 101, 102, ..., 204, 301, etc.
+                String roomNumber = floor + String.format("%02d", roomInFloor);
+
+                Room room = new Room();
+                room.setRoomNumber(roomNumber);
+                room.setStatus("available");
+                room.setNote("");
+                room.setType(roomType.getName());
+                room.setPrice(String.valueOf(roomType.getPrice()));
+
+                roomList.add(room);
+                generatedCount++;
+
+                // Increment room number within floor
+                roomInFloor++;
+                if (roomInFloor > roomsPerFloor) {
+                    roomInFloor = 1;
+                    floor++;
+                }
+            }
+        }
+
+        if (generatedCount != totalRooms) {
+            throw new IllegalArgumentException("Sum of RoomType.totalRooms must equal totalFloors * roomsPerFloor");
+        }
+
+        roomRepository.saveAll(roomList);
+    }
+
 
 }

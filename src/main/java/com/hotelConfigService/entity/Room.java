@@ -17,4 +17,7 @@ public class Room {
     private String status;
     private String roomNumber;
     private String note;
+    private String price;
+    private String type;
+
 }
